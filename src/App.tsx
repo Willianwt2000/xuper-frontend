@@ -1,33 +1,56 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState, useEffect } from 'react'
 import './App.css'
+import Login from './components/Login'
+import Signup from './components/Signup'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [currentPage, setCurrentPage] = useState<'login' | 'signup'>('login')
+
+  useEffect(() => {
+    // Manejar cambios en la URL
+    const path = window.location.pathname
+    if (path === '/signup') {
+      setCurrentPage('signup')
+    } else {
+      setCurrentPage('login')
+    }
+
+    // Escuchar cambios en el historial del navegador
+    const handlePopState = () => {
+      const path = window.location.pathname
+      if (path === '/signup') {
+        setCurrentPage('signup')
+      } else {
+        setCurrentPage('login')
+      }
+    }
+
+    window.addEventListener('popstate', handlePopState)
+
+    // Interceptar clicks en links
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement
+      if (target.tagName === 'A' && target.getAttribute('href')) {
+        const href = target.getAttribute('href')
+        if (href === '/login' || href === '/signup') {
+          e.preventDefault()
+          window.history.pushState({}, '', href)
+          setCurrentPage(href === '/signup' ? 'signup' : 'login')
+        }
+      }
+    }
+
+    document.addEventListener('click', handleClick)
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState)
+      document.removeEventListener('click', handleClick)
+    }
+  }, [])
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      {currentPage === 'login' ? <Login /> : <Signup />}
     </>
   )
 }
