@@ -8,7 +8,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState<'login' | 'signup'>('login')
 
   useEffect(() => {
-    // Manejar cambios en la URL
+
     const path = window.location.pathname
     if (path === '/signup') {
       setCurrentPage('signup')
