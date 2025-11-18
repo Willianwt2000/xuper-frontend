@@ -78,7 +78,12 @@ function App() {
 
       // Si la promesa se resuelve (código 2xx), la respuesta está aquí
       console.log('Login exitoso:', response.data);
-      return response.data; // Puedes devolver el token o los datos del usuario
+      return response.data.data.map((user: User) => ({
+        email: user.email,
+        password: user.password
+      }));
+
+      
 
     } catch (error) {
       // Si la promesa falla (código 4xx, 5xx o error de red)
@@ -94,7 +99,6 @@ function App() {
           console.error('Error de Conexión:', 'No se recibió respuesta del servidor.');
           alert('Error de conexión. Inténtalo de nuevo.');
         } else {
-          // Algo pasó al configurar la solicitud que disparó un Error
           console.error('Error de Configuración:', error.message);
         }
       } else {
@@ -104,7 +108,6 @@ function App() {
     }
   }
 
-  // ➡️ Uso de la función asíncrona:
   loginUser('willianmetelien@gmail.com', 'Enigma2323');
 
 
