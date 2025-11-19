@@ -49,20 +49,6 @@ function App() {
     }
   }, [])
 
-  // console.log(`https://xuper-backend.onrender.com`)
-
-
-  // async function getAllUser() {
-  //   try {
-  //     const response = await axios.get(`${baseUrl}/user`);
-  //     console.log({ response });
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
-
-  // getAllUser();
-
 
   //post to the url to login user
   const baseUrl = 'https://xuper-backend.onrender.com';
