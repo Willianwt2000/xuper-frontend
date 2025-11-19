@@ -49,23 +49,9 @@ function App() {
     }
   }, [])
 
-  // console.log(`https://xuper-backend.onrender.com`)
-
-
-  // async function getAllUser() {
-  //   try {
-  //     const response = await axios.get(`${baseUrl}/user`);
-  //     console.log({ response });
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
-
-  // getAllUser();
-
 
   //post to the url to login user
-  const baseUrl = 'https://xuper-backend.onrender.com';
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 
 
@@ -108,7 +94,7 @@ function App() {
     }
   }
 
-  loginUser('willianmetelien@gmail.com', 'Enigma2323');
+  // loginUser('willianmetelien@gmail.com', 'Enigma2323');
 
 
   //Gel all users
@@ -141,7 +127,7 @@ function App() {
   }
 
 
-  getAllUsers();
+  // getAllUsers();
 
 
   return (
