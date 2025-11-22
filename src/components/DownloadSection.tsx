@@ -7,14 +7,19 @@ import type { DownloadResponse } from '../types/api.types';
 
 export function DownloadSection() {
   const [downloadLinks, setDownloadLinks] = useState<DownloadResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchDownloads = async () => {
       try {
+        setIsLoading(true);
         const data = await contentApi.getDownloads();
         setDownloadLinks(data);
       } catch (error) {
         console.error('Error fetching download links:', error);
+        toast.error('Error al cargar los enlaces de descarga');
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -27,17 +32,34 @@ export function DownloadSection() {
       return;
     }
 
-    const url = type === 'mobile' ? downloadLinks.xprtv : downloadLinks.xptv;
+    // Corregido: xptv para mobile, xprtv para TV
+    const url = type === 'mobile' ? downloadLinks.xptv : downloadLinks.xprtv;
+    
+    if (!url || url === '') {
+      toast.error('URL de descarga no disponible');
+      return;
+    }
+
     const filename = type === 'mobile' ? 'xuper-mobile.apk' : 'xuper-tv.apk';
 
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', filename);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Método más compatible para descargas
+    try {
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+      link.setAttribute('target', '_blank');
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
-    toast.success(`Descargando Xuper ${type === 'mobile' ? 'Mobile' : 'TV'}`);
+      toast.success(`Descargando Xuper ${type === 'mobile' ? 'Mobile' : 'TV'}`);
+    } catch (error) {
+      console.error('Error downloading:', error);
+      // Fallback: abrir en nueva pestaña
+      window.open(url, '_blank');
+      toast.info('Abriendo descarga en nueva pestaña');
+    }
   };
 
   return (
@@ -122,12 +144,12 @@ export function DownloadSection() {
                 className="relative group w-full"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                disabled={!downloadLinks}
+                disabled={isLoading || !downloadLinks}
               >
-                <div className="relative px-5 md:px-6 py-3 md:py-4 bg-gradient-to-r from-[#00F0FF] to-[#FF00FF] rounded-xl overflow-hidden">
+                <div className="relative px-5 md:px-6 py-3 md:py-4 bg-gradient-to-r from-[#00F0FF] to-[#FF00FF] rounded-xl overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed">
                   <span className="relative flex items-center justify-center gap-2 text-white font-bold tracking-wide text-sm md:text-base">
                     <Download className="w-4 h-4 md:w-5 md:h-5" />
-                    {!downloadLinks ? 'Cargando...' : 'Descargar APK'}
+                    {isLoading ? 'Cargando...' : 'Descargar APK'}
                   </span>
                 </div>
               </motion.button>
@@ -153,12 +175,12 @@ export function DownloadSection() {
                 className="relative group w-full"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                disabled={!downloadLinks}
+                disabled={isLoading || !downloadLinks}
               >
-                <div className="relative px-5 md:px-6 py-3 md:py-4 bg-gradient-to-r from-[#FF00FF] to-[#CCFF00] rounded-xl overflow-hidden">
+                <div className="relative px-5 md:px-6 py-3 md:py-4 bg-gradient-to-r from-[#FF00FF] to-[#CCFF00] rounded-xl overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed">
                   <span className="relative flex items-center justify-center gap-2 text-black font-bold tracking-wide text-sm md:text-base">
                     <Download className="w-4 h-4 md:w-5 md:h-5" />
-                    {!downloadLinks ? 'Cargando...' : 'Descargar APK'}
+                    {isLoading ? 'Cargando...' : 'Descargar APK'}
                   </span>
                 </div>
               </motion.button>

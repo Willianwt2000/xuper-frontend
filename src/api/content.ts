@@ -3,7 +3,7 @@ import type { DownloadResponse } from '../types/api.types';
 
 export const contentApi = {
   getDownloads: async (): Promise<DownloadResponse> => {
-    const response = await xuperApi.get<DownloadResponse>('/api/xuper/download');
+    const response = await xuperApi.get<DownloadResponse>('/xuper/download');
     return response.data;
   },
 };
