@@ -13,7 +13,7 @@ interface AuthModalProps {
 export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const [verificationStep, setVerificationStep] = useState(false); // New state for verification step
+  const [verificationStep, setVerificationStep] = useState(false); 
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -155,7 +155,6 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
                     </button>
                   </div>
 
-                  {/* Custom styles for autofill */}
                   <style>{`
                     input:-webkit-autofill,
                     input:-webkit-autofill:hover, 
