@@ -1,17 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { LoginForm } from "./LoginForm";
 import { SignupForm } from "./SignupForm";
+import { useNavigate } from "react-router-dom";
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAuthSuccess: () => void;
+  initialMode: "login" | "signup";
 }
 
-export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
-  const [isLogin, setIsLogin] = useState(true);
+export function AuthModal({ isOpen, onClose, onAuthSuccess, initialMode }: AuthModalProps) {
+  const navigate = useNavigate();
+
+  // El modal arranca dependiendo de la ruta
+  const [isLogin, setIsLogin] = useState(initialMode === "login");
+
+  // Cambiar cuando cambie la ruta
+  useEffect(() => {
+    setIsLogin(initialMode === "login");
+  }, [initialMode]);
 
   return (
     <AnimatePresence>
@@ -56,29 +66,23 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
                     {isLogin ? "Bienvenido" : "Crear Cuenta"}
                   </h2>
                   <p className="text-gray-400 text-sm">
-                    {isLogin
-                      ? "Inicia sesión para continuar"
-                      : "Únete a la experiencia Xuper"}
+                    {isLogin ? "Inicia sesión para continuar" : "Únete a la experiencia Xuper"}
                   </p>
                 </div>
 
                 {/* Switch Tabs */}
                 <div className="flex p-1 bg-[#111] border border-white/10 rounded-xl mb-8">
                   <button
-                    onClick={() => setIsLogin(true)}
-                    className={`flex-1 py-2.5 text-sm rounded-lg transition-all ${isLogin
-                      ? "bg-white/10 text-white border border-white/5"
-                      : "text-gray-500"
+                    onClick={() => navigate("/login")}
+                    className={`flex-1 py-2.5 text-sm rounded-lg transition-all ${isLogin ? "bg-white/10 text-white" : "text-gray-500"
                       }`}
                   >
                     Login
                   </button>
 
                   <button
-                    onClick={() => setIsLogin(false)}
-                    className={`flex-1 py-2.5 text-sm rounded-lg transition-all ${!isLogin
-                      ? "bg-white/10 text-white border border-white/5"
-                      : "text-gray-500"
+                    onClick={() => navigate("/signup")}
+                    className={`flex-1 py-2.5 text-sm rounded-lg transition-all ${!isLogin ? "bg-white/10 text-white" : "text-gray-500"
                       }`}
                   >
                     Sign Up
@@ -91,6 +95,26 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
                 ) : (
                   <SignupForm onAuthSuccess={onAuthSuccess} />
                 )}
+
+                {/* Link abajo */}
+                <p className="text-white mt-4 text-center">
+                  {isLogin ? (
+                    <>
+                      ¿No tienes cuenta?{" "}
+                      <button className="text-blue-400 underline" onClick={() => navigate("/signup")}>
+                        Regístrate aquí
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      ¿Ya tienes cuenta?{" "}
+                      <button className="text-blue-400 underline" onClick={() => navigate("/login")}>
+                        Inicia sesión aquí
+                      </button>
+                    </>
+                  )}
+                </p>
+
               </div>
             </motion.div>
           </div>

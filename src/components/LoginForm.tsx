@@ -72,6 +72,7 @@ export function LoginForm({ onAuthSuccess }: { onAuthSuccess: () => void }) {
         </button>
       </div>
 
+
       {/* Submit */}
       <button
         type="submit"
